@@ -1,0 +1,414 @@
+MySQL Shell 8.0.12
+
+Copyright (c) 2016, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+
+
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+
+ MySQL  SQL > \connect -c root@localhost;
+The -c option is deprecated, please use --mysql or -mc instead
+Creating a Classic session to 'root@localhost;'
+Please provide the password for 'root@localhost;': ****
+MySQL Error 2005 (HY000): Unknown MySQL server host 'localhost;' (2)
+
+ MySQL  SQL > \connect -c root@localhost
+The -c option is deprecated, please use --mysql or -mc instead
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ****
+Save password for 'root@localhost:3306'? [Y]es/[N]o/Ne[v]er (default No): Y
+Fetching schema names for autocompletion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 5.5.61 MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+
+ MySQL  localhost:3306  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| evaluacion_2       |
+| mysql              |
+| northwind          |
+| performance_schema |
+| sakila             |
+| test               |
+| world              |
++--------------------+
+8 rows in set (0.0007 sec)
+
+ MySQL  localhost:3306  SQL > \use northwind;
+MySQL Error 1049 (42000): ClassicSession.runSql: Unknown database 'northwind;'
+
+ MySQL  localhost:3306  SQL > \use northwind
+Default schema set to `northwind`.
+Fetching table and column names from `northwind` for auto-completion... Press ^C to stop.
+
+ MySQL  localhost:3306  northwind  SQL > desc products;
++-----------------+---------------+------+-----+---------+----------------+
+| Field           | Type          | Null | Key | Default | Extra          |
++-----------------+---------------+------+-----+---------+----------------+
+| ProductID       | int(11)       | NO   | PRI | NULL    | auto_increment |
+| ProductName     | varchar(40)   | NO   | MUL | NULL    |                |
+| SupplierID      | int(11)       | YES  | MUL | NULL    |                |
+| CategoryID      | int(11)       | YES  | MUL | NULL    |                |
+| QuantityPerUnit | varchar(20)   | YES  |     | NULL    |                |
+| UnitPrice       | decimal(10,4) | YES  |     | 0.0000  |                |
+| UnitsInStock    | smallint(2)   | YES  |     | 0       |                |
+| UnitsOnOrder    | smallint(2)   | YES  |     | 0       |                |
+| ReorderLevel    | smallint(2)   | YES  |     | 0       |                |
+| Discontinued    | bit(1)        | NO   |     | b'0'    |                |
++-----------------+---------------+------+-----+---------+----------------+
+10 rows in set (0.0045 sec)
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.priductname,a.unitprice,a.quantity,
+                                     ... (a.unitprice*a.quantity) as subtotal
+                                     ... from orderdetails a
+                                     ... inner join products
+                                     ... on a.productid=b.productid limit 20;
+ERROR: 1054 (42S22): Unknown column 'b.priductname' in 'field list'
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.priductname,a.unitprice,a.quantity,  (a.unitprice*a.quantity) as subtotal from orderdetails a  inner join products b  on a.productid=b.productid limit 20;
+ERROR: 1054 (42S22): Unknown column 'b.priductname' in 'field list'
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.productname,a.unitprice,a.quantity,  (a.unitprice*a.quantity) as subtotal from orderdetails a  inner join products b  on a.productid=b.productid limit 20;
++---------+--------------+-----------+----------+-----------+
+| orderid | productname  | unitprice | quantity | subtotal  |
++---------+--------------+-----------+----------+-----------+
+|   10265 | Alice Mutton |   31.2000 |       30 |  936.0000 |
+|   10279 | Alice Mutton |   31.2000 |       15 |  468.0000 |
+|   10294 | Alice Mutton |   31.2000 |       15 |  468.0000 |
+|   10302 | Alice Mutton |   31.2000 |       40 | 1248.0000 |
+|   10319 | Alice Mutton |   31.2000 |        8 |  249.6000 |
+|   10338 | Alice Mutton |   31.2000 |       20 |  624.0000 |
+|   10339 | Alice Mutton |   31.2000 |       70 | 2184.0000 |
+|   10346 | Alice Mutton |   31.2000 |       36 | 1123.2000 |
+|   10415 | Alice Mutton |   31.2000 |        2 |   62.4000 |
+|   10430 | Alice Mutton |   31.2000 |       45 | 1404.0000 |
+|   10431 | Alice Mutton |   31.2000 |       50 | 1560.0000 |
+|   10444 | Alice Mutton |   31.2000 |       10 |  312.0000 |
+|   10523 | Alice Mutton |   39.0000 |       25 |  975.0000 |
+|   10530 | Alice Mutton |   39.0000 |       40 | 1560.0000 |
+|   10550 | Alice Mutton |   39.0000 |        8 |  312.0000 |
+|   10564 | Alice Mutton |   39.0000 |       16 |  624.0000 |
+|   10573 | Alice Mutton |   39.0000 |       18 |  702.0000 |
+|   10607 | Alice Mutton |   39.0000 |      100 | 3900.0000 |
+|   10686 | Alice Mutton |   39.0000 |       30 | 1170.0000 |
+|   10696 | Alice Mutton |   39.0000 |       20 |  780.0000 |
++---------+--------------+-----------+----------+-----------+
+20 rows in set (0.0005 sec)
+
+ MySQL  localhost:3306  northwind  SQL > show tables;
++----------------------+
+| Tables_in_northwind  |
++----------------------+
+| account              |
+| categories           |
+| customercustomerdemo |
+| customerdemographics |
+| customers            |
+| empleados            |
+| employees            |
+| employeeterritories  |
+| lista_empleados      |
+| lista_empleados_a    |
+| mi_rfc               |
+| nombre_cliente       |
+| orderdetails         |
+| orders               |
+| pagos_empleados      |
+| personas             |
+| products             |
+| prueba2              |
+| region               |
+| rfc_gringos          |
+| shippers             |
+| suppliers            |
+| territories          |
+| ventas_producto      |
++----------------------+
+24 rows in set (0.0006 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc products;
++-----------------+---------------+------+-----+---------+----------------+
+| Field           | Type          | Null | Key | Default | Extra          |
++-----------------+---------------+------+-----+---------+----------------+
+| ProductID       | int(11)       | NO   | PRI | NULL    | auto_increment |
+| ProductName     | varchar(40)   | NO   | MUL | NULL    |                |
+| SupplierID      | int(11)       | YES  | MUL | NULL    |                |
+| CategoryID      | int(11)       | YES  | MUL | NULL    |                |
+| QuantityPerUnit | varchar(20)   | YES  |     | NULL    |                |
+| UnitPrice       | decimal(10,4) | YES  |     | 0.0000  |                |
+| UnitsInStock    | smallint(2)   | YES  |     | 0       |                |
+| UnitsOnOrder    | smallint(2)   | YES  |     | 0       |                |
+| ReorderLevel    | smallint(2)   | YES  |     | 0       |                |
+| Discontinued    | bit(1)        | NO   |     | b'0'    |                |
++-----------------+---------------+------+-----+---------+----------------+
+10 rows in set (0.1402 sec)
+
+ MySQL  localhost:3306  northwind  SQL > show tables;
++----------------------+
+| Tables_in_northwind  |
++----------------------+
+| account              |
+| categories           |
+| customercustomerdemo |
+| customerdemographics |
+| customers            |
+| empleados            |
+| employees            |
+| employeeterritories  |
+| lista_empleados      |
+| lista_empleados_a    |
+| mi_rfc               |
+| nombre_cliente       |
+| orderdetails         |
+| orders               |
+| pagos_empleados      |
+| personas             |
+| products             |
+| prueba2              |
+| region               |
+| rfc_gringos          |
+| shippers             |
+| suppliers            |
+| territories          |
+| ventas_producto      |
++----------------------+
+24 rows in set (0.0006 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc categories;
++--------------+-------------+------+-----+---------+----------------+
+| Field        | Type        | Null | Key | Default | Extra          |
++--------------+-------------+------+-----+---------+----------------+
+| CategoryID   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| CategoryName | varchar(15) | NO   | MUL | NULL    |                |
+| Description  | mediumtext  | YES  |     | NULL    |                |
+| Picture      | longblob    | YES  |     | NULL    |                |
++--------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.0042 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc suppliers;
++--------------+-------------+------+-----+---------+----------------+
+| Field        | Type        | Null | Key | Default | Extra          |
++--------------+-------------+------+-----+---------+----------------+
+| SupplierID   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| CompanyName  | varchar(40) | NO   | MUL | NULL    |                |
+| ContactName  | varchar(30) | YES  |     | NULL    |                |
+| ContactTitle | varchar(30) | YES  |     | NULL    |                |
+| Address      | varchar(60) | YES  |     | NULL    |                |
+| City         | varchar(15) | YES  |     | NULL    |                |
+| Region       | varchar(15) | YES  |     | NULL    |                |
+| PostalCode   | varchar(10) | YES  | MUL | NULL    |                |
+| Country      | varchar(15) | YES  |     | NULL    |                |
+| Phone        | varchar(24) | YES  |     | NULL    |                |
+| Fax          | varchar(24) | YES  |     | NULL    |                |
+| HomePage     | mediumtext  | YES  |     | NULL    |                |
++--------------+-------------+------+-----+---------+----------------+
+12 rows in set (0.0043 sec)
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.productname,b.quantity,b.unitprice,(b.unitprice*b.quantity) as subtotal,
+                                     ... ;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.productname,b.quantity,b.unitprice,(b.unitprice*b.quantity) as subtotal, c.categoryname,d.companyname from orderdetails a
+                                     ... inner join products b on a.productid = b.productid
+                                     ... inner join categories c on b.categoryid = c.categoryid
+                                     ... inner join suppliers d on b.supplierid = d.supplierid
+                                     ... limit 100;
+ERROR: 1054 (42S22): Unknown column 'b.quantity' in 'field list'
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.productname,a.quantity,a.unitprice,(a.unitprice*a.quantity) as subtotal, c.categoryname,d.companyname from orderdetails a   inner join products b on a.productid = b.productid inner join categories c on b.categoryid = c.categoryid inner join suppliers d on b.supplierid = d.supplierid limit 100;
++---------+------------------+----------+-----------+------------+--------------+---------------------------+
+| orderid | productname      | quantity | unitprice | subtotal   | categoryname | companyname               |
++---------+------------------+----------+-----------+------------+--------------+---------------------------+
+|   10329 | Cte de Blaye     |       20 |  210.8000 |  4216.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10351 | Cte de Blaye     |       20 |  210.8000 |  4216.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10353 | Cte de Blaye     |       50 |  210.8000 | 10540.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10360 | Cte de Blaye     |       10 |  210.8000 |  2108.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10372 | Cte de Blaye     |       40 |  210.8000 |  8432.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10417 | Cte de Blaye     |       50 |  210.8000 | 10540.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10424 | Cte de Blaye     |       49 |  210.8000 | 10329.2000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10479 | Cte de Blaye     |       30 |  210.8000 |  6324.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10518 | Cte de Blaye     |       15 |  263.5000 |  3952.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10540 | Cte de Blaye     |       30 |  263.5000 |  7905.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10541 | Cte de Blaye     |        4 |  263.5000 |  1054.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10616 | Cte de Blaye     |       15 |  263.5000 |  3952.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10672 | Cte de Blaye     |       15 |  263.5000 |  3952.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10783 | Cte de Blaye     |        5 |  263.5000 |  1317.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10805 | Cte de Blaye     |       10 |  263.5000 |  2635.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10816 | Cte de Blaye     |       30 |  263.5000 |  7905.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10817 | Cte de Blaye     |       30 |  263.5000 |  7905.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10828 | Cte de Blaye     |        2 |  263.5000 |   527.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10831 | Cte de Blaye     |        8 |  263.5000 |  2108.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10865 | Cte de Blaye     |       60 |  263.5000 | 15810.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10889 | Cte de Blaye     |       40 |  263.5000 | 10540.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10964 | Cte de Blaye     |        5 |  263.5000 |  1317.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10981 | Cte de Blaye     |       60 |  263.5000 | 15810.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   11032 | Cte de Blaye     |       25 |  263.5000 |  6587.5000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10253 | Chartreuse verte |       42 |   14.4000 |   604.8000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10257 | Chartreuse verte |        6 |   14.4000 |    86.4000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10297 | Chartreuse verte |       60 |   14.4000 |   864.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10305 | Chartreuse verte |       30 |   14.4000 |   432.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10323 | Chartreuse verte |        4 |   14.4000 |    57.6000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10347 | Chartreuse verte |       50 |   14.4000 |   720.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10361 | Chartreuse verte |       54 |   14.4000 |   777.6000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10377 | Chartreuse verte |       20 |   14.4000 |   288.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10445 | Chartreuse verte |        6 |   14.4000 |    86.4000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10455 | Chartreuse verte |       20 |   14.4000 |   288.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10477 | Chartreuse verte |       20 |   14.4000 |   288.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10508 | Chartreuse verte |       10 |   18.0000 |   180.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10577 | Chartreuse verte |       10 |   18.0000 |   180.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10614 | Chartreuse verte |        5 |   18.0000 |    90.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10643 | Chartreuse verte |       21 |   18.0000 |   378.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10647 | Chartreuse verte |       20 |   18.0000 |   360.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10654 | Chartreuse verte |       20 |   18.0000 |   360.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10661 | Chartreuse verte |        3 |   18.0000 |    54.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10762 | Chartreuse verte |       16 |   18.0000 |   288.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10764 | Chartreuse verte |      130 |   18.0000 |  2340.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10784 | Chartreuse verte |        2 |   18.0000 |    36.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10827 | Chartreuse verte |       21 |   18.0000 |   378.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10830 | Chartreuse verte |       28 |   18.0000 |   504.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10840 | Chartreuse verte |       10 |   18.0000 |   180.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10865 | Chartreuse verte |       80 |   18.0000 |  1440.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10895 | Chartreuse verte |       45 |   18.0000 |   810.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10899 | Chartreuse verte |        8 |   18.0000 |   144.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10977 | Chartreuse verte |       30 |   18.0000 |   540.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   11069 | Chartreuse verte |       20 |   18.0000 |   360.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   11077 | Chartreuse verte |        2 |   18.0000 |    36.0000 | Beverages    | Aux joyeux ecclsiastiques |
+|   10287 | Sasquatch Ale    |       20 |   11.2000 |   224.0000 | Beverages    | Bigfoot Breweries         |
+|   10315 | Sasquatch Ale    |       14 |   11.2000 |   156.8000 | Beverages    | Bigfoot Breweries         |
+|   10358 | Sasquatch Ale    |       10 |   11.2000 |   112.0000 | Beverages    | Bigfoot Breweries         |
+|   10367 | Sasquatch Ale    |       36 |   11.2000 |   403.2000 | Beverages    | Bigfoot Breweries         |
+|   10386 | Sasquatch Ale    |       10 |   11.2000 |   112.0000 | Beverages    | Bigfoot Breweries         |
+|   10438 | Sasquatch Ale    |       20 |   11.2000 |   224.0000 | Beverages    | Bigfoot Breweries         |
+|   10483 | Sasquatch Ale    |       35 |   11.2000 |   392.0000 | Beverages    | Bigfoot Breweries         |
+|   10548 | Sasquatch Ale    |       10 |   14.0000 |   140.0000 | Beverages    | Bigfoot Breweries         |
+|   10573 | Sasquatch Ale    |       40 |   14.0000 |   560.0000 | Beverages    | Bigfoot Breweries         |
+|   10688 | Sasquatch Ale    |       14 |   14.0000 |   196.0000 | Beverages    | Bigfoot Breweries         |
+|   10700 | Sasquatch Ale    |       12 |   14.0000 |   168.0000 | Beverages    | Bigfoot Breweries         |
+|   10757 | Sasquatch Ale    |       30 |   14.0000 |   420.0000 | Beverages    | Bigfoot Breweries         |
+|   10805 | Sasquatch Ale    |       10 |   14.0000 |   140.0000 | Beverages    | Bigfoot Breweries         |
+|   10890 | Sasquatch Ale    |       10 |   14.0000 |   140.0000 | Beverages    | Bigfoot Breweries         |
+|   10937 | Sasquatch Ale    |       20 |   14.0000 |   280.0000 | Beverages    | Bigfoot Breweries         |
+|   10990 | Sasquatch Ale    |       60 |   14.0000 |   840.0000 | Beverages    | Bigfoot Breweries         |
+|   11008 | Sasquatch Ale    |       90 |   14.0000 |  1260.0000 | Beverages    | Bigfoot Breweries         |
+|   11063 | Sasquatch Ale    |       30 |   14.0000 |   420.0000 | Beverages    | Bigfoot Breweries         |
+|   11066 | Sasquatch Ale    |       35 |   14.0000 |   490.0000 | Beverages    | Bigfoot Breweries         |
+|   10261 | Steeleye Stout   |       20 |   14.4000 |   288.0000 | Beverages    | Bigfoot Breweries         |
+|   10281 | Steeleye Stout   |        4 |   14.4000 |    57.6000 | Beverages    | Bigfoot Breweries         |
+|   10286 | Steeleye Stout   |      100 |   14.4000 |  1440.0000 | Beverages    | Bigfoot Breweries         |
+|   10321 | Steeleye Stout   |       10 |   14.4000 |   144.0000 | Beverages    | Bigfoot Breweries         |
+|   10324 | Steeleye Stout   |       70 |   14.4000 |  1008.0000 | Beverages    | Bigfoot Breweries         |
+|   10390 | Steeleye Stout   |       40 |   14.4000 |   576.0000 | Beverages    | Bigfoot Breweries         |
+|   10398 | Steeleye Stout   |       30 |   14.4000 |   432.0000 | Beverages    | Bigfoot Breweries         |
+|   10400 | Steeleye Stout   |       35 |   14.4000 |   504.0000 | Beverages    | Bigfoot Breweries         |
+|   10424 | Steeleye Stout   |       60 |   14.4000 |   864.0000 | Beverages    | Bigfoot Breweries         |
+|   10444 | Steeleye Stout   |        8 |   14.4000 |   115.2000 | Beverages    | Bigfoot Breweries         |
+|   10521 | Steeleye Stout   |        3 |   18.0000 |    54.0000 | Beverages    | Bigfoot Breweries         |
+|   10546 | Steeleye Stout   |       30 |   18.0000 |   540.0000 | Beverages    | Bigfoot Breweries         |
+|   10551 | Steeleye Stout   |       20 |   18.0000 |   360.0000 | Beverages    | Bigfoot Breweries         |
+|   10553 | Steeleye Stout   |        6 |   18.0000 |   108.0000 | Beverages    | Bigfoot Breweries         |
+|   10578 | Steeleye Stout   |       20 |   18.0000 |   360.0000 | Beverages    | Bigfoot Breweries         |
+|   10587 | Steeleye Stout   |       20 |   18.0000 |   360.0000 | Beverages    | Bigfoot Breweries         |
+|   10589 | Steeleye Stout   |        4 |   18.0000 |    72.0000 | Beverages    | Bigfoot Breweries         |
+|   10595 | Steeleye Stout   |       30 |   18.0000 |   540.0000 | Beverages    | Bigfoot Breweries         |
+|   10623 | Steeleye Stout   |       30 |   18.0000 |   540.0000 | Beverages    | Bigfoot Breweries         |
+|   10697 | Steeleye Stout   |        9 |   18.0000 |   162.0000 | Beverages    | Bigfoot Breweries         |
+|   10720 | Steeleye Stout   |       21 |   18.0000 |   378.0000 | Beverages    | Bigfoot Breweries         |
+|   10740 | Steeleye Stout   |       35 |   18.0000 |   630.0000 | Beverages    | Bigfoot Breweries         |
+|   10789 | Steeleye Stout   |       15 |   18.0000 |   270.0000 | Beverages    | Bigfoot Breweries         |
+|   10821 | Steeleye Stout   |       20 |   18.0000 |   360.0000 | Beverages    | Bigfoot Breweries         |
+|   10831 | Steeleye Stout   |        8 |   18.0000 |   144.0000 | Beverages    | Bigfoot Breweries         |
+|   10836 | Steeleye Stout   |        6 |   18.0000 |   108.0000 | Beverages    | Bigfoot Breweries         |
+|   10845 | Steeleye Stout   |       25 |   18.0000 |   450.0000 | Beverages    | Bigfoot Breweries         |
++---------+------------------+----------+-----------+------------+--------------+---------------------------+
+100 rows in set (0.0010 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc empployes;
+ERROR: 1146 (42S02): Table 'northwind.empployes' doesn't exist
+
+ MySQL  localhost:3306  northwind  SQL > show tables;
++----------------------+
+| Tables_in_northwind  |
++----------------------+
+| account              |
+| categories           |
+| customercustomerdemo |
+| customerdemographics |
+| customers            |
+| empleados            |
+| employees            |
+| employeeterritories  |
+| lista_empleados      |
+| lista_empleados_a    |
+| mi_rfc               |
+| nombre_cliente       |
+| orderdetails         |
+| orders               |
+| pagos_empleados      |
+| personas             |
+| products             |
+| prueba2              |
+| region               |
+| rfc_gringos          |
+| shippers             |
+| suppliers            |
+| territories          |
+| ventas_producto      |
++----------------------+
+24 rows in set (0.0006 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc region;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| RegionID          | int(11)     | NO   | PRI | NULL    |       |
+| RegionDescription | varchar(50) | NO   |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+2 rows in set (0.0042 sec)
+
+ MySQL  localhost:3306  northwind  SQL > desc orders;
++----------------+---------------+------+-----+---------+----------------+
+| Field          | Type          | Null | Key | Default | Extra          |
++----------------+---------------+------+-----+---------+----------------+
+| OrderID        | int(11)       | NO   | PRI | NULL    | auto_increment |
+| CustomerID     | varchar(5)    | YES  | MUL | NULL    |                |
+| EmployeeID     | int(11)       | YES  | MUL | NULL    |                |
+| OrderDate      | datetime      | YES  | MUL | NULL    |                |
+| RequiredDate   | datetime      | YES  |     | NULL    |                |
+| ShippedDate    | datetime      | YES  | MUL | NULL    |                |
+| ShipVia        | int(11)       | YES  | MUL | NULL    |                |
+| Freight        | decimal(10,4) | YES  |     | 0.0000  |                |
+| ShipName       | varchar(40)   | YES  |     | NULL    |                |
+| ShipAddress    | varchar(60)   | YES  |     | NULL    |                |
+| ShipCity       | varchar(15)   | YES  |     | NULL    |                |
+| ShipRegion     | varchar(15)   | YES  |     | NULL    |                |
+| ShipPostalCode | varchar(10)   | YES  | MUL | NULL    |                |
+| ShipCountry    | varchar(15)   | YES  |     | NULL    |                |
++----------------+---------------+------+-----+---------+----------------+
+14 rows in set (0.0044 sec)
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.firsname,b.lastname, c.regiondescription
+                                     ... from a order a inner join employees b on a.employeeid = b.employee;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'a inner join employees b on a.employeeid = b.employee' at line 2
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.firsname,b.lastname, from a order a inner join employees b on a.employeeid = b.employeeid limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from a order a inner join employees b on a.employeeid = b.employeeid limit 20' at line 1
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.firtsname,b.lastname, from a order a inner join employees b on a.employeeid = b.employeeid limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from a order a inner join employees b on a.employeeid = b.employeeid limit 20' at line 1
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.firstname,b.lastname, from a order a inner join employees b on a.employeeid = b.employeeid limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from a order a inner join employees b on a.employeeid = b.employeeid limit 20' at line 1
+
+ MySQL  localhost:3306  northwind  SQL > select a.orderid, b.firstname,b.lastname, from a order a inner join employees b on a.employeeid = b.employeeid limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from a order a inner join employees b on a.employeeid = b.employeeid limit 20' at line 1
+
+ MySQL  localhost:3306  northwind  SQL >
